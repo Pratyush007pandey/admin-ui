@@ -1,0 +1,14 @@
+.title-container {
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid grey;
+  text-align: left;
+  align-items: center;
+}
+.title-item {
+  width: 20vw;
+}
+.title-input {
+  margin-right: 15vw;
+  margin-left: 10px;
+}

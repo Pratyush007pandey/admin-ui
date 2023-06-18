@@ -1,0 +1,30 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  gap: 20px;
+  align-items: center;
+}
+.deletePageination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.page-number:hover {
+  background-color: gray;
+  color: white;
+  border-radius: 50%;
+}
+.page-number {
+  padding: 10px;
+}
+.active {
+  background-color: black;
+  color: white;
+  border-radius: 50%;
+}
+.delete-selected {
+  background-color: red;
+  color: white;
+  border: 0;
+}

@@ -1,0 +1,11 @@
+.Search {
+  width: 100%;
+  padding: 15px 0;
+  border: 1px solid grey;
+  color: grey;
+}
+.search-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
