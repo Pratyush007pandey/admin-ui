@@ -10,9 +10,10 @@ const Admin = () => {
   const [data, setData] = useState([]);
   const [current, setCurrent] = useState([]);
   const [itemOffset, setItemOffset] = useState(0);
-  const [startIndex, setStartIndex] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
   const [edit, setEdit] = useState(0);
   const [selected, setSelected] = useState([]);
+  const [activePage, setActivePage] = useState(pageNo);
   const [updatedValues, setUpdatedValues] = useState({
     id: "",
     name: "",
@@ -22,14 +23,26 @@ const Admin = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(
-        "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
-      );
-      setUserData(response.data);
-      setData(response.data);
+      try {
+        const response = await axios.get(
+          "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
+        );
+        setUserData(response.data);
+        setData(response.data);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const newOffset = (pageNo * 10) % userData.length;
+    setItemOffset(newOffset);
+    const endOffset = newOffset + 10;
+    const currentItem = userData.slice(newOffset, endOffset);
+    setCurrent(currentItem);
+  }, [userData, itemOffset, pageNo]);
 
   const handleSearch = (event) => {
     const value = event.target.value;
@@ -51,12 +64,11 @@ const Admin = () => {
   const handleChecked = (event, id) => {
     const checked = event.target.checked;
     if (checked) {
-      setSelected([...selected, id]);
+      setSelected((prevSelected) => [...prevSelected, id]);
     } else {
-      const updatedSelectedItems = selected.filter(
-        (selectedId) => selectedId !== id
+      setSelected((prevSelected) =>
+        prevSelected.filter((selectedId) => selectedId !== id)
       );
-      setSelected(updatedSelectedItems);
     }
   };
 
@@ -68,10 +80,9 @@ const Admin = () => {
   };
 
   const handleDelete = (id) => {
-    console.log(id);
-    const updateduser = userData.filter((item) => item.id !== id);
-    setUserData(updateduser);
-    setData(updateduser);
+    const updatedUser = userData.filter((item) => item.id !== id);
+    setUserData(updatedUser);
+    setData(updatedUser);
   };
 
   const handleEdit = (id) => {
@@ -119,31 +130,24 @@ const Admin = () => {
     );
   };
 
-  // const handlePageClick = (event) => {
-  //   const newOffset = (event.selected * itemsPerPage) % userData.length;
-  //   setItemOffset(newOffset);
-  // };
-  // const itemsPerPage = 10;
-
-  useEffect(() => {
-    const endOffset = itemOffset + 10;
-    const currentItem = userData.slice(itemOffset, endOffset);
-    setCurrent(currentItem);
-  }, [userData, itemOffset]);
-
-  // const pageCount = Math.ceil(userData.length / itemsPerPage);
-
-  // console.log(userData, "hekl");
-  // console.log(userData, "hek2");
   const handlePageClick = (event) => {
-    console.log(event.target.value);
-    const newOffset = (event.target.value * 10) % userData.length;
-    setItemOffset(newOffset);
-    const endOffset = itemOffset + 10;
-    const currentItem = userData.slice(itemOffset, endOffset);
-    setCurrent(currentItem);
+    const clickedPage = parseInt(event.target.value);
+
+    if (!isNaN(clickedPage) && clickedPage >= 0 && clickedPage < Pages) {
+      setPageNo(clickedPage);
+      setActivePage(clickedPage);
+    } else if (event.target.value === "prev" && pageNo > 0) {
+      setPageNo((prevPageNo) => prevPageNo - 1);
+      setActivePage((prevActivePage) => prevActivePage - 1);
+    } else if (event.target.value === "next" && pageNo < Pages - 1) {
+      setPageNo((prevPageNo) => prevPageNo + 1);
+      setActivePage((prevActivePage) => prevActivePage + 1);
+    }
   };
+
   const totalItem = userData.length;
+  const Pages = Math.ceil(totalItem / 10);
+  console.log("pages", Pages);
 
   return (
     <div className="admin-body">
@@ -159,13 +163,14 @@ const Admin = () => {
         handleUpdate={handleUpdate}
         handleChecked={handleChecked}
       />
-      {/* <Pagination
-        deleteSelected={deleteSelected}
-        pageCount={pageCount}
+      <Pagination
+        Pages={Pages}
         handlePageClick={handlePageClick}
-      /> */}
-      <Pagination totalItems={totalItem} handPageClick={handlePageClick} />
+        activePage={activePage}
+        deleteSelected={deleteSelected}
+      />
     </div>
   );
 };
+
 export default Admin;

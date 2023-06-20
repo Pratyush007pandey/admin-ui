@@ -12,3 +12,9 @@
   margin-right: 15vw;
   margin-left: 10px;
 }
+.control {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  text-align: left;
+}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import UpgradeIcon from "@mui/icons-material/Upgrade";
+import ClearIcon from "@mui/icons-material/Clear";
 import "./List.css";
 
 const List = ({
@@ -43,7 +45,7 @@ const List = ({
             <p className="title-item">{item.email}</p>
             <p className="title-item">{item.role}</p>
 
-            <span className="title-item">
+            <span className="title-item control">
               <button onClick={() => handleEdit(item.id)}>
                 <EditIcon />
               </button>
@@ -58,6 +60,7 @@ const List = ({
               type="checkbox"
               onChange={(event) => handleChecked(event, item.id)}
               checked={selected.includes(item.id)}
+              className="title-input"
             ></input>
             <div className="item-info">
               <input
@@ -68,6 +71,7 @@ const List = ({
                     : item.name
                 }
                 onChange={(event) => handleInputChange(event, item.id, "name")}
+                className="title-item"
               />
               <input
                 type="text"
@@ -77,6 +81,7 @@ const List = ({
                     : item.email
                 }
                 onChange={(event) => handleInputChange(event, item.id, "email")}
+                className="title-item"
               />
               <input
                 type="text"
@@ -86,10 +91,18 @@ const List = ({
                     : item.role
                 }
                 onChange={(event) => handleInputChange(event, item.id, "role")}
+                className="title-item"
               />
             </div>
-            <button onClick={() => handleUpdate(item.id)}>Update</button>
-            <button onClick={() => handleEdit(0)}>Cancel</button>
+
+            <span className="title-item control">
+              <button onClick={() => handleUpdate(item.id)}>
+                <UpgradeIcon />
+              </button>
+              <button onClick={() => handleEdit(0)}>
+                <ClearIcon />
+              </button>
+            </span>
           </div>
         )
       )}
